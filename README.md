@@ -25,6 +25,7 @@ Download release zip from git sidebar and extact to preferred location. Create w
 - **Jira API URL:** Enter the API URL, typically `https://customer.atlassian.net/rest/api` for cloud users.
 - **Jira API Username / Password:** Mandatory for authentication.
 - **JQL:** Construct your query using the Jira search feature, then copy and paste it here. Basic validation is in place, though further enhancements are planned.
+Application will display example tickets on a list until settings are properly configured.
 
 ![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/2e6a298b-4017-4c44-8053-350c41bf09ec)
 
