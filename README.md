@@ -18,6 +18,9 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 - Jira API version 3 support only
 
 ## Setup
+Download release zip from git sidebar and extact to preferred location. Create windows shortcuts if preferred.
+
+### Settings:
 - **Jira URL:** Provide the basic Jira URL (e.g., `https://customer.atlassian.net/`). Used for redirection when clicking on tickets.
 - **Jira API URL:** Enter the API URL, typically `https://customer.atlassian.net/rest/api` for cloud users.
 - **Jira API Username / Password:** Mandatory for authentication.
