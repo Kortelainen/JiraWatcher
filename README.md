@@ -3,7 +3,7 @@
 ![JiraWatcherIcon](https://github.com/Kortelainen/JiraWatcher/assets/10597651/b1a47111-82bc-4821-bcfd-4e1cdcd9beed)
 
 ## Description
-JiraWatcher is a straightforward desktop application designed to streamline issue tracking within Jira. It leverages JQL in the Jira API to fetch a dashboard-like list of items based on user-defined search criteria. The primary objective of this project is to offer a configurable and visually appealing alternative to the standard Jira dashboard. Originally conceived to meet personal needs for timely item tracking, JiraWatcher aims to alleviate the frustrations often encountered with the Jira web application.
+JiraWatcher is a straightforward desktop application designed to streamline issue tracking within Jira. It leverages JQL in the Jira API to fetch a dashboard-like list of items based on user-defined search criteria. The primary objective of this project is to offer a configurable and visually appealing alternative to the standard Jira dashboard. The project was created to help my personal need to keep track of certain tickets types.
 
 ### Key Features:
 - Automatic dashboard refresh every minute.
