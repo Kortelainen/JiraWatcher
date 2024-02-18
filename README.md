@@ -1,5 +1,5 @@
 # JiraWatcher
-![JiraWatcherIcon](https://github.com/Kortelainen/JiraWatcher/assets/10597651/9ebb3786-5089-4b4b-9cda-c6edd8944ea7)
+![JiraWatcherIcon](https://github.com/Kortelainen/JiraWatcher/assets/10597651/b1a47111-82bc-4821-bcfd-4e1cdcd9beed)
 
 
 ## Description
@@ -8,9 +8,7 @@ Simple desktop app to track jira issues. This applicaiton uses JQL in jira api t
 * Dashboard is refreshed every minute.
 * New items in list cause notification sound and taskbar flash
 
-
-![MainWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/9eb54356-44fd-416b-b04b-aff36e0ebba9)
-
+![MainWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/d5d29b5f-eec6-44e2-a244-5a8f025f7b02)
 
 
 ## Requirements
@@ -24,7 +22,7 @@ Simple desktop app to track jira issues. This applicaiton uses JQL in jira api t
 * Jira API URL: API url, for cloud users its something like this. https://customer.atlassian.net/rest/api
 * Jira api username / password. Necessary
 * JQL. Jira querry language for the task list. It's recomended you go to jira search feature and costruct your JQL querry in there and copy paste it into this box. For now there is only barebones validation on my app.
-![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/6e15e8e0-a5a8-4ffa-9e03-62cf1d91359e)
+![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/2e6a298b-4017-4c44-8053-350c41bf09ec)
 
 ## Future roadmap
 Planned features and fixes in no particular order
