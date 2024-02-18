@@ -1,0 +1,32 @@
+# Ignore compiled binaries
+*.exe
+*.dll
+
+# Ignore log files
+*.log
+
+# Ignore Visual Studio files
+.vs/
+*.suo
+*.user
+*.userprefs
+*.vscode/
+*.vssettings
+*_i.c
+*_p.c
+*.pidb
+*.log
+*.iobj
+*.ipch/
+*.obj/
+*.pch/
+*.vspscc
+*.vssscc
+*.ncb
+*.sdf
+*.opensdf
+*.sln.docstates
+
+# Ignore build output directories
+bin/
+obj/
