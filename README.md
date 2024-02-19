@@ -1,39 +1,42 @@
 # JiraWatcher
-![JiraWatcherIcon](https://github.com/Kortelainen/JiraWatcher/assets/10597651/9ebb3786-5089-4b4b-9cda-c6edd8944ea7)
 
+![JiraWatcherIcon](https://github.com/Kortelainen/JiraWatcher/assets/10597651/b1a47111-82bc-4821-bcfd-4e1cdcd9beed)
 
 ## Description
-Simple desktop app to track jira issues. This applicaiton uses JQL in jira api to get dashboard like item list to show searched items. Main goal of this project is to provide configurable and styled alternative to jira dashboard. The project was created to help my personal need to keep track of certain items in timely manner. I find using Jira web-app frustrating.
+JiraWatcher is a straightforward desktop application designed to streamline issue tracking within Jira. It leverages JQL in the Jira API to fetch a dashboard-like list of items based on user-defined search criteria. The primary objective of this project is to offer a configurable and visually appealing alternative to the standard Jira dashboard. The project was created to help my personal need to keep track of certain tickets types.
 
-* Dashboard is refreshed every minute.
-* New items in list cause notification sound and taskbar flash
+### Key Features:
+- Automatic dashboard refresh every minute.
+- Notification alerts and taskbar flashing for newly added items.
+- Local storage of all settings ensures security and convenience.
 
-
-![MainWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/9eb54356-44fd-416b-b04b-aff36e0ebba9)
-
-
+![MainWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/d5d29b5f-eec6-44e2-a244-5a8f025f7b02)
 
 ## Requirements
-* Windows 11 (Soft requirement, other platforms are untested)
-* Jira + Jira API
-* Jira api version 3 suport only
+- Windows 11 (Other platforms remain untested)
+- Jira installation with Jira API access
+- Jira API version 3 support only
 
 ## Setup
-* Jira url: This should be basic jira url. ie https://customer.atlassian.net/
-  * Used for the redirection when ticket is clicked.
-* Jira API URL: API url, for cloud users its something like this. https://customer.atlassian.net/rest/api
-* Jira api username / password. Necessary
-* JQL. Jira querry language for the task list. It's recomended you go to jira search feature and costruct your JQL querry in there and copy paste it into this box. For now there is only barebones validation on my app.
-![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/6e15e8e0-a5a8-4ffa-9e03-62cf1d91359e)
+Download release zip from git sidebar and extact to preferred location. Create windows shortcuts if preferred.
 
-## Future roadmap
-Planned features and fixes in no particular order
-* Fix error icon to be hidden when no error occurs. The icon should display exception messages to user for troubleshooting
-* More robust error handling
-* Allow user to enable or disable notifications and their sounds
-* Use windows integrated notifications
-* Empty jira item list splash art
-* Styling fixes
-* Style sheets such as dark and light mode.
-* Multiple tabs each with own JQL + Tab spesific settings.
+### Settings:
+- **Jira URL:** Provide the basic Jira URL (e.g., `https://customer.atlassian.net/`). Used for redirection when clicking on tickets.
+- **Jira API URL:** Enter the API URL, typically `https://customer.atlassian.net/rest/api` for cloud users.
+- **Jira API Username / Password:** Mandatory for authentication.
+- **JQL:** Construct your query using the Jira search feature, then copy and paste it here. Basic validation is in place, though further enhancements are planned.
 
+Application will display example tickets on a list until settings are properly configured.
+
+![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/2e6a298b-4017-4c44-8053-350c41bf09ec)
+
+## Future Roadmap
+Here are the planned features and fixes, listed in no particular order:
+- Hide error icon when no errors occur; display exception messages for troubleshooting.
+- Implement more robust error handling mechanisms.
+- Allow users to enable/disable notifications and customize notification sounds.
+- Integrate with Windows native notifications for a seamless user experience.
+- Provide a visual indicator for an empty Jira item list.
+- Address styling inconsistencies and introduce style sheets such as dark and light mode.
+- Implement multiple tabs, each with its own JQL query and tab-specific settings.
+- Enhance configurability of refresh rates while considering Jira API throttling limitations.
