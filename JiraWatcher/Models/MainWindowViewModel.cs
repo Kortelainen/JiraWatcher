@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -102,12 +103,15 @@ namespace JiraWatcher.Models
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     JiraItems.Clear();
-                    foreach (var item in fetchedItems)
+                    if (fetchedItems != null)
                     {
-                        JiraItems.Add(item);
-                    }
+                        foreach (var item in fetchedItems)
+                        {
+                            JiraItems.Add(item);
+                        }
 
-                    LastRefreshDateTime = DateTime.Now;
+                        LastRefreshDateTime = DateTime.Now;
+                    }
                 });
 
                 if (!isFirstLoad)

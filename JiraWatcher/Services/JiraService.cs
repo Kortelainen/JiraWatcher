@@ -24,7 +24,7 @@ namespace JiraWatcher.Services
             _jiraBaseUrl = Properties.Settings.Default.JiraApiURL;
             _jiraApiUsername = Properties.Settings.Default.JiraApiUsername;
             _jiraApiPassword = Properties.Settings.Default.JiraApiPassword;
-            _JQL = JqlHelper.ValidateAndEncodeJql(Properties.Settings.Default.JQL);
+            _JQL = Properties.Settings.Default.JQL;
         }
 
         public async Task<List<JiraItem>> GetJiraItemsAsync()
@@ -35,11 +35,18 @@ namespace JiraWatcher.Services
                 string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_jiraApiUsername}:{_jiraApiPassword}"));
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-                HttpResponseMessage response = await _httpClient.GetAsync($"3/search?os_authType=basic&jql={_JQL}");
-                response.EnsureSuccessStatusCode();
+                // Use POST /rest/api/3/search/jql to fetch issues with fields
+                var searchPayload = new
+                {
+                    jql = _JQL,
+                    fields = new[] { "summary" }
+                };
+                var searchContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(searchPayload), Encoding.UTF8, "application/json");
+                HttpResponseMessage searchResponse = await _httpClient.PostAsync("rest/api/3/search/jql", searchContent);
+                searchResponse.EnsureSuccessStatusCode();
 
-                string responseBody = await response.Content.ReadAsStringAsync();
-                return ParseIssues(responseBody);
+                string searchResponseBody = await searchResponse.Content.ReadAsStringAsync();
+                return ParseIssues(searchResponseBody);
             }
             catch (Exception ex)
             {
