@@ -20,5 +20,11 @@
     <Setting Name="JiraTabsJson" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="NotificationSound" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Exclamation</Value>
+    </Setting>
+    <Setting Name="ThemeMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dark</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
