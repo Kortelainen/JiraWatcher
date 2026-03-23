@@ -82,5 +82,17 @@ namespace JiraWatcher.Properties {
                 this["JQL"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string JiraTabsJson {
+            get {
+                return ((string)(this["JiraTabsJson"]));
+            }
+            set {
+                this["JiraTabsJson"] = value;
+            }
+        }
     }
 }

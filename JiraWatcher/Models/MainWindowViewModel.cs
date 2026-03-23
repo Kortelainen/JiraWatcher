@@ -1,6 +1,5 @@
 ﻿using JiraWatcher.Helpers;
 using JiraWatcher.Services;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Policy;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -17,159 +16,310 @@ namespace JiraWatcher.Models
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private const string DefaultJql = "created >= -2d order by created DESC";
+        private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(1);
 
-        private ObservableCollection<JiraItem> _jiraItems;
-        
-        public ObservableCollection<JiraItem> JiraItems
+        private string _errorMessage = string.Empty;
+        private JiraTab? _selectedTab;
+        private System.Timers.Timer? _refreshTimer;
+        private bool _isFirstLoad = true;
+        private bool _isRefreshing;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ObservableCollection<JiraTab> Tabs { get; } = new ObservableCollection<JiraTab>();
+
+        public JiraTab? SelectedTab
         {
-            get { return _jiraItems; }
+            get => _selectedTab;
             set
             {
-                _jiraItems = value;
-                OnPropertyChanged(nameof(JiraItems));
+                if (_selectedTab == value)
+                {
+                    return;
+                }
+
+                _selectedTab = value;
+                OnPropertyChanged(nameof(SelectedTab));
             }
         }
 
-        private DateTime _lastRefreshDateTime;
-        public DateTime LastRefreshDateTime
-        {
-            get { return _lastRefreshDateTime; }
-            set
-            {
-                _lastRefreshDateTime = value;
-                OnPropertyChanged(nameof(LastRefreshDateTime));
-            }
-        }
-
-        private string errorMessage;
-        
         public string ErrorMessage
         {
-            get { return errorMessage; }
+            get => _errorMessage;
             set
             {
-                errorMessage = value;
+                _errorMessage = value;
                 OnPropertyChanged(nameof(ErrorMessage));
                 OnPropertyChanged(nameof(IsErrorVisible));
             }
         }
+
         public bool IsErrorVisible => !string.IsNullOrEmpty(ErrorMessage);
 
         public ICommand OpenLinkCommand { get; }
 
+        public ICommand AddTabCommand { get; }
+
         public MainWindowViewModel()
         {
             OpenLinkCommand = new RelayCommand<string>(OpenLink);
-            JiraItems = new ObservableCollection<JiraItem>();
-            LastRefreshDateTime = DateTime.Now;
+            AddTabCommand = new RelayCommand<object>(_ => AddTab());
+            LoadTabs();
             StartAutoRefreshTimer();
         }
 
-        private System.Timers.Timer _refreshTimer;
-        private static int interval = 60000; // 1min -> Jira max is 500 per 5 min. 15 sec = 25 users. 60 sec = 100 users.
-
         private void StartAutoRefreshTimer()
         {
-            FetchAndRefreshJiraItems();
-            _refreshTimer = new System.Timers.Timer();
-            _refreshTimer.Interval = interval;
-            _refreshTimer.Elapsed += (sender, e) => FetchAndRefreshJiraItems();
+            _ = RefreshAllTabsAsync();
+            _refreshTimer = new System.Timers.Timer(RefreshInterval.TotalMilliseconds);
+            _refreshTimer.Elapsed += (sender, e) => _ = RefreshAllTabsAsync();
             _refreshTimer.Start();
         }
 
-        public event EventHandler SettingsChanged;
-        private void OnSettingsChanged() => SettingsChanged?.Invoke(this, EventArgs.Empty);
-
         internal void ResetAutoRefreshTimer()
         {
-            if (_refreshTimer != null)
-            { 
-                isFirstLoad = true;
-                FetchAndRefreshJiraItems();
-                _refreshTimer.Stop();
-                _refreshTimer.Interval = interval;
-                _refreshTimer.Start();
+            if (_refreshTimer == null)
+            {
+                return;
             }
+
+            SaveTabs();
+            _isFirstLoad = true;
+            _ = RefreshAllTabsAsync();
+            _refreshTimer.Stop();
+            _refreshTimer.Interval = RefreshInterval.TotalMilliseconds;
+            _refreshTimer.Start();
         }
 
-        private bool isFirstLoad = true;
-
-        private async void FetchAndRefreshJiraItems()
+        internal void UpdateTabSettings(JiraTab tab, string tabName, string jql)
         {
+            tab.Name = string.IsNullOrWhiteSpace(tabName) ? GenerateNextTabName() : tabName.Trim();
+            tab.Jql = string.IsNullOrWhiteSpace(jql) ? GetDefaultJql() : jql.Trim();
+            SaveTabs();
+        }
+
+        internal void DeleteTab(JiraTab tab)
+        {
+            if (Tabs.Count <= 1)
+            {
+                return;
+            }
+
+            int index = Tabs.IndexOf(tab);
+            Tabs.Remove(tab);
+
+            if (SelectedTab == tab || SelectedTab == null)
+            {
+                SelectedTab = Tabs[Math.Max(0, Math.Min(index, Tabs.Count - 1))];
+            }
+
+            SaveTabs();
+        }
+
+        private void AddTab()
+        {
+            JiraTab tab = new JiraTab
+            {
+                Name = GenerateNextTabName(),
+                Jql = GetDefaultJql()
+            };
+
+            Tabs.Add(tab);
+            SelectedTab = tab;
+            SaveTabs();
+            _ = RefreshAllTabsAsync();
+        }
+
+        private void LoadTabs()
+        {
+            foreach (JiraTab tab in LoadPersistedTabs())
+            {
+                Tabs.Add(tab);
+            }
+
+            if (Tabs.Count == 0)
+            {
+                Tabs.Add(new JiraTab
+                {
+                    Name = "Search 1",
+                    Jql = GetDefaultJql()
+                });
+            }
+
+            SelectedTab = Tabs.FirstOrDefault();
+            SaveTabs();
+        }
+
+        private IEnumerable<JiraTab> LoadPersistedTabs()
+        {
+            string persistedTabsJson = Properties.Settings.Default.JiraTabsJson;
+
+            if (string.IsNullOrWhiteSpace(persistedTabsJson))
+            {
+                yield return new JiraTab
+                {
+                    Name = "Search 1",
+                    Jql = GetDefaultJql()
+                };
+
+                yield break;
+            }
+
+            List<PersistedJiraTab>? persistedTabs;
+
             try
             {
-                List<JiraItem> fetchedItems = await FetchJiraItemsFromServerAsync();
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    JiraItems.Clear();
-                    if (fetchedItems != null)
-                    {
-                        foreach (var item in fetchedItems)
-                        {
-                            JiraItems.Add(item);
-                        }
-
-                        LastRefreshDateTime = DateTime.Now;
-                    }
-                });
-
-                if (!isFirstLoad)
-                {
-                    foreach (var newItem in fetchedItems)
-                    {
-                        if (!JiraItems.Any(item => item.Key == newItem.Key))
-                        {
-                            UXEventHelper.Notification();
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    isFirstLoad = false;
-                }
+                persistedTabs = JsonSerializer.Deserialize<List<PersistedJiraTab>>(persistedTabsJson);
             }
-            catch (Exception ex)
+            catch (JsonException)
             {
-                Console.WriteLine($"Error fetching Jira items: {ex.Message}");
-                ErrorMessage = "An error occurred while fetching Jira items. Please try again later.";
+                persistedTabs = null;
+            }
+
+            if (persistedTabs == null || persistedTabs.Count == 0)
+            {
+                yield return new JiraTab
+                {
+                    Name = "Search 1",
+                    Jql = GetDefaultJql()
+                };
+
+                yield break;
+            }
+
+            foreach (PersistedJiraTab persistedTab in persistedTabs)
+            {
+                yield return new JiraTab
+                {
+                    Id = persistedTab.Id == Guid.Empty ? Guid.NewGuid() : persistedTab.Id,
+                    Name = string.IsNullOrWhiteSpace(persistedTab.Name) ? GenerateNextTabName() : persistedTab.Name.Trim(),
+                    Jql = string.IsNullOrWhiteSpace(persistedTab.Jql) ? GetDefaultJql() : persistedTab.Jql.Trim()
+                };
             }
         }
 
-        private async Task<List<JiraItem>> FetchJiraItemsFromServerAsync()
+        private async Task RefreshAllTabsAsync()
         {
-            List<JiraItem> fetchedItems = new List<JiraItem>();
-
-            if (!SettingsValidationService.AreSettingsValid())
+            if (_isRefreshing)
             {
-                fetchedItems = new List<JiraItem>
+                return;
+            }
+
+            _isRefreshing = true;
+
+            try
+            {
+                ErrorMessage = string.Empty;
+                List<JiraTab> tabs = Application.Current.Dispatcher.Invoke(() => Tabs.ToList());
+
+                foreach (JiraTab tab in tabs)
+                {
+                    await RefreshTabAsync(tab, !_isFirstLoad);
+                }
+
+                _isFirstLoad = false;
+            }
+            finally
+            {
+                _isRefreshing = false;
+            }
+        }
+
+        private async Task RefreshTabAsync(JiraTab tab, bool notifyOnNewItems)
+        {
+            HashSet<string> existingKeys = Application.Current.Dispatcher.Invoke(() =>
+                tab.JiraItems
+                    .Where(item => !string.IsNullOrWhiteSpace(item.Key))
+                    .Select(item => item.Key!)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase));
+
+            List<JiraItem> fetchedItems = await FetchJiraItemsFromServerAsync(tab.Jql);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                tab.JiraItems.Clear();
+
+                foreach (JiraItem item in fetchedItems)
+                {
+                    tab.JiraItems.Add(item);
+                }
+
+                tab.LastRefreshDateTime = DateTime.Now;
+            });
+
+            if (notifyOnNewItems && fetchedItems.Any(item => !string.IsNullOrWhiteSpace(item.Key) && !existingKeys.Contains(item.Key!)))
+            {
+                UXEventHelper.Notification();
+            }
+        }
+
+        private async Task<List<JiraItem>> FetchJiraItemsFromServerAsync(string jql)
+        {
+            if (!SettingsValidationService.AreSettingsValid(jql))
+            {
+                return new List<JiraItem>
                 {
                     new JiraItem { Key = "T-1", Summary = "Sample Issue 1", Link = "https://example.com/issue1" },
                     new JiraItem { Key = "T-2", Summary = "Sample Issue 2, This one has longer text. Something that really would go to another line. If list does not fit the window scroll bar is availeable", Link = "https://example.com/issue2" },
                     new JiraItem { Key = "T-3", Summary = "Sample Issue 3, Click the button to open ticket in default browser", Link = "https://example.com/issue3" },
                 };
             }
-            else
-            {
-                try
-                {
-                    JiraService jiraService = new JiraService(new HttpClient());
-                    fetchedItems = await jiraService.GetJiraItemsAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error fetching Jira items: {ex.Message}");
-                    ErrorMessage = "An error occurred while fetching Jira items. Please try again later.";
-                }
-            }
 
-            return fetchedItems;
+            try
+            {
+                using JiraService jiraService = new JiraService(new HttpClient());
+                return await jiraService.GetJiraItemsAsync(jql);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching Jira items: {ex.Message}");
+                ErrorMessage = "An error occurred while fetching Jira items. Please try again later.";
+                return new List<JiraItem>();
+            }
         }
 
-
-        private static void OpenLink(string url)
+        private void SaveTabs()
         {
+            List<PersistedJiraTab> persistedTabs = Tabs
+                .Select(tab => new PersistedJiraTab
+                {
+                    Id = tab.Id,
+                    Name = tab.Name,
+                    Jql = tab.Jql
+                })
+                .ToList();
+
+            Properties.Settings.Default.JiraTabsJson = JsonSerializer.Serialize(persistedTabs);
+            Properties.Settings.Default.Save();
+        }
+
+        private string GenerateNextTabName()
+        {
+            int tabNumber = 1;
+
+            while (Tabs.Any(tab => string.Equals(tab.Name, $"Search {tabNumber}", StringComparison.OrdinalIgnoreCase)))
+            {
+                tabNumber++;
+            }
+
+            return $"Search {tabNumber}";
+        }
+
+        private static string GetDefaultJql()
+        {
+            return string.IsNullOrWhiteSpace(Properties.Settings.Default.JQL)
+                ? DefaultJql
+                : Properties.Settings.Default.JQL.Trim();
+        }
+
+        private static void OpenLink(string? url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return;
+            }
+
             try
             {
                 Process.Start(new ProcessStartInfo
@@ -187,6 +337,15 @@ namespace JiraWatcher.Models
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private sealed class PersistedJiraTab
+        {
+            public Guid Id { get; set; }
+
+            public string Name { get; set; } = string.Empty;
+
+            public string Jql { get; set; } = string.Empty;
         }
     }
 }

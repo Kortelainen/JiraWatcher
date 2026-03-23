@@ -17,5 +17,8 @@
     <Setting Name="JQL" Type="System.String" Scope="User">
       <Value Profile="(Default)">created &gt;= -2d order by created DESC</Value>
     </Setting>
+    <Setting Name="JiraTabsJson" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

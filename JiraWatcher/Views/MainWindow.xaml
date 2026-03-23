@@ -18,47 +18,122 @@
     <Window.Resources>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
-
-
-
     <Grid>
-        <materialDesign:PackIcon Kind="AlertCircleOutline" HorizontalAlignment="Right" Margin="0,18,22,0"
-                              Foreground="Red" Width="30" Height="30">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Margin="10" Padding="12" Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Search Tabs" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                    <ListBox ItemsSource="{Binding Tabs}"
+                             SelectedItem="{Binding SelectedTab}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,8" Padding="10,8,8,10" Background="{DynamicResource MaterialDesignPaper}" CornerRadius="6">
+                                    <DockPanel>
+                                        <Button DockPanel.Dock="Right"
+                                                VerticalAlignment="Top"
+                                                Width="22" Height="22"
+                                                Padding="0"
+                                                Style="{StaticResource MaterialDesignToolButton}"
+                                                Click="TabSettingsButton_Click">
+                                            <materialDesign:PackIcon Kind="CogOutline" Width="14" Height="14"/>
+                                        </Button>
+                                        <StackPanel Margin="0,0,4,0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
+                                            <TextBlock Text="{Binding JiraItems.Count, StringFormat={}{0} items}" Margin="0,4,0,0" FontSize="11" Opacity="0.75"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Margin="6,4,0,0"
+                               FontSize="11"
+                               Opacity="0.65"
+                               Cursor="Hand"
+                               TextDecorations="Underline">
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </TextBlock.InputBindings>
+                        + Add
+                    </TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="0,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,70,12">
+                <TextBlock Text="{Binding SelectedTab.Name}" FontSize="20" FontWeight="Bold"/>
+            </StackPanel>
+
+            <Border Grid.Row="1" Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="8" Padding="10">
+                <ListBox ItemsSource="{Binding SelectedTab.JiraItems}" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource MaterialDesignPaper}" Margin="0,5,0,5" Padding="10" CornerRadius="4">
+                                <Grid Margin="0,5,0,5" Background="{DynamicResource MaterialDesignPaper}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding Key}" VerticalAlignment="Center" FontWeight="Bold" FontSize="14"/>
+
+                                    <TextBlock Text="{Binding Summary}" VerticalAlignment="Center" Margin="10,0,10,0"
+                                               TextWrapping="Wrap" FontSize="12" Grid.Column="1"/>
+
+                                    <Button Content="Open"
+                                            Command="{Binding DataContext.OpenLinkCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Link}"
+                                            HorizontalAlignment="Left"
+                                            Grid.Column="2"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <TextBlock Grid.Row="2"
+                       Text="{Binding SelectedTab.LastRefreshDateTime, StringFormat=Last refresh: {0:G}}"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"/>
+        </Grid>
+
+        <materialDesign:PackIcon Kind="AlertCircleOutline"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Top"
+                                 Margin="0,18,22,0"
+                                 Foreground="Red"
+                                 Width="30"
+                                 Height="30"
+                                 Visibility="{Binding IsErrorVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <materialDesign:PackIcon.ToolTip>
-                <ToolTip Content="{Binding ErrorMessage}" Visibility="{Binding IsErrorVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <ToolTip Content="{Binding ErrorMessage}"/>
             </materialDesign:PackIcon.ToolTip>
         </materialDesign:PackIcon>
-
-        <ListBox ItemsSource="{Binding JiraItems}" Margin="10,10,80,10" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="{DynamicResource MaterialDesignCardBackground}" Margin="0 5" Padding="10" CornerRadius="4">
-                        <Grid Margin="0 5" Background="{DynamicResource MaterialDesignCardBackground}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="{Binding Key}" VerticalAlignment="Center" FontWeight="Bold" FontSize="14"/>
-
-                            <TextBlock Text="{Binding Summary}" VerticalAlignment="Center" Margin="10 0" 
-                               TextWrapping="Wrap" FontSize="12" Grid.Column="1"/>
-
-                            <Button Content="Open" Command="{Binding DataContext.OpenLinkCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding Link}" Margin="10 0" HorizontalAlignment="Left" Grid.Column="2"/>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-
-
         <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="SettingsButton_Click"
             VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
             <materialDesign:PackIcon Kind="Settings"/>
         </Button>
-        <TextBlock Text="{Binding LastRefreshDateTime}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 10"/>
     </Grid>
 
 </Window>
