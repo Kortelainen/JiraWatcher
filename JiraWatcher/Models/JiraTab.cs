@@ -8,6 +8,7 @@ namespace JiraWatcher.Models
     {
         private string _name = string.Empty;
         private string _jql = string.Empty;
+        private bool _notificationEnabled = true;
         private DateTime _lastRefreshDateTime = DateTime.Now;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -41,6 +42,21 @@ namespace JiraWatcher.Models
 
                 _jql = value;
                 OnPropertyChanged(nameof(Jql));
+            }
+        }
+
+        public bool NotificationEnabled
+        {
+            get => _notificationEnabled;
+            set
+            {
+                if (_notificationEnabled == value)
+                {
+                    return;
+                }
+
+                _notificationEnabled = value;
+                OnPropertyChanged(nameof(NotificationEnabled));
             }
         }
 

@@ -92,10 +92,11 @@ namespace JiraWatcher.Models
             _refreshTimer.Start();
         }
 
-        internal void UpdateTabSettings(JiraTab tab, string tabName, string jql)
+        internal void UpdateTabSettings(JiraTab tab, string tabName, string jql, bool notificationEnabled)
         {
             tab.Name = string.IsNullOrWhiteSpace(tabName) ? GenerateNextTabName() : tabName.Trim();
             tab.Jql = string.IsNullOrWhiteSpace(jql) ? GetDefaultJql() : jql.Trim();
+            tab.NotificationEnabled = notificationEnabled;
             SaveTabs();
         }
 
@@ -194,7 +195,8 @@ namespace JiraWatcher.Models
                 {
                     Id = persistedTab.Id == Guid.Empty ? Guid.NewGuid() : persistedTab.Id,
                     Name = string.IsNullOrWhiteSpace(persistedTab.Name) ? GenerateNextTabName() : persistedTab.Name.Trim(),
-                    Jql = string.IsNullOrWhiteSpace(persistedTab.Jql) ? GetDefaultJql() : persistedTab.Jql.Trim()
+                    Jql = string.IsNullOrWhiteSpace(persistedTab.Jql) ? GetDefaultJql() : persistedTab.Jql.Trim(),
+                    NotificationEnabled = persistedTab.NotificationEnabled
                 };
             }
         }
@@ -248,7 +250,7 @@ namespace JiraWatcher.Models
                 tab.LastRefreshDateTime = DateTime.Now;
             });
 
-            if (notifyOnNewItems && fetchedItems.Any(item => !string.IsNullOrWhiteSpace(item.Key) && !existingKeys.Contains(item.Key!)))
+            if (notifyOnNewItems && tab.NotificationEnabled && fetchedItems.Any(item => !string.IsNullOrWhiteSpace(item.Key) && !existingKeys.Contains(item.Key!)))
             {
                 UXEventHelper.Notification();
             }
@@ -286,7 +288,8 @@ namespace JiraWatcher.Models
                 {
                     Id = tab.Id,
                     Name = tab.Name,
-                    Jql = tab.Jql
+                    Jql = tab.Jql,
+                    NotificationEnabled = tab.NotificationEnabled
                 })
                 .ToList();
 
@@ -346,6 +349,8 @@ namespace JiraWatcher.Models
             public string Name { get; set; } = string.Empty;
 
             public string Jql { get; set; } = string.Empty;
+
+            public bool NotificationEnabled { get; set; } = true;
         }
     }
 }

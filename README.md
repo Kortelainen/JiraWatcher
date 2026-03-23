@@ -32,11 +32,11 @@ Application will display example tickets on a list until settings are properly c
 
 ## Future Roadmap
 Here are the planned features and fixes, listed in no particular order:
-- Hide error icon when no errors occur; display exception messages for troubleshooting.
+- ~~Hide error icon when no errors occur; display exception messages for troubleshooting.~~
 - Implement more robust error handling mechanisms.
-- Allow users to enable/disable notifications and customize notification sounds.
+- ~~Allow users to enable/disable notifications and customize notification sounds.~~
 - Integrate with Windows native notifications for a seamless user experience.
 - Provide a visual indicator for an empty Jira item list.
 - Address styling inconsistencies and introduce style sheets such as dark and light mode.
-- Implement multiple tabs, each with its own JQL query and tab-specific settings.
+- ~~Implement multiple tabs, each with its own JQL query and tab-specific settings.~~
 - Enhance configurability of refresh rates while considering Jira API throttling limitations.

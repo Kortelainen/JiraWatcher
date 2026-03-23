@@ -6,7 +6,7 @@ namespace JiraWatcher.Helpers
     {
         internal static void Notification()
         {
-            System.Media.SystemSounds.Beep.Play();
+            System.Media.SystemSounds.Exclamation.Play();
             FlashWindowHelper.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, 2000);
         }
 

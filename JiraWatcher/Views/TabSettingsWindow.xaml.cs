@@ -19,11 +19,12 @@ namespace JiraWatcher
         {
             TabNameTextBox.Text = _tab.Name;
             TabJqlTextBox.Text = _tab.Jql;
+            NotificationCheckBox.IsChecked = _tab.NotificationEnabled;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.UpdateTabSettings(_tab, TabNameTextBox.Text, TabJqlTextBox.Text);
+            _viewModel.UpdateTabSettings(_tab, TabNameTextBox.Text, TabJqlTextBox.Text, NotificationCheckBox.IsChecked == true);
             _viewModel.ResetAutoRefreshTimer();
             Close();
         }

@@ -130,9 +130,10 @@
                 <ToolTip Content="{Binding ErrorMessage}"/>
             </materialDesign:PackIcon.ToolTip>
         </materialDesign:PackIcon>
-        <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="SettingsButton_Click"
-            VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
-            <materialDesign:PackIcon Kind="Settings"/>
+        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Click="SettingsButton_Click"
+            VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10"
+            Width="32" Height="32">
+            <materialDesign:PackIcon Kind="Settings" Width="16" Height="16"/>
         </Button>
     </Grid>
 
