@@ -10,7 +10,8 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 - Notification alerts and taskbar flashing for newly added items.
 - Local storage of all settings ensures security and convenience.
 
-![MainWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/d5d29b5f-eec6-44e2-a244-5a8f025f7b02)
+<img width="976" height="524" alt="Screenshot 2026-03-23 182438" src="https://github.com/user-attachments/assets/77e2758c-190e-410e-ae2f-3073f4e49232" />
+
 
 ## Requirements
 - Windows 11 (Other platforms remain untested)
