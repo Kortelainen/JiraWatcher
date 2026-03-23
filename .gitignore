@@ -1,0 +1,26 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.suo
+*.user
+*.userprefs
+*.rsuser
+*.sln.docstates
+
+# Logs
+*.log
+
+# Common generated files
+*.cache
+*.pidb
+*.pdb
+*.iobj
+*.ipch/
+*.pch/
+
+# Test results
+TestResults/
