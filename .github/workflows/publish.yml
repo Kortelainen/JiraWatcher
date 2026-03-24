@@ -32,7 +32,7 @@ jobs:
         run: |
           dotnet publish JiraWatcher/JiraWatcher.csproj `
             -c Release `
-            -r win-x86 `
+            -r win-x64 `
             --self-contained true `
             -p:PublishSingleFile=true `
             -p:FileVersion=${{ steps.version.outputs.FILE_VERSION }} `
@@ -42,11 +42,11 @@ jobs:
       - name: Create release zip
         shell: pwsh
         run: |
-          Compress-Archive -Path publish/JiraWatcher.exe -DestinationPath publish/JiraWatcher-${{ steps.version.outputs.VERSION }}-win-x86.zip
+          Compress-Archive -Path publish/JiraWatcher.exe -DestinationPath publish/JiraWatcher-${{ steps.version.outputs.VERSION }}-win-x64.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: JiraWatcher ${{ steps.version.outputs.VERSION }}
-          files: publish/JiraWatcher-${{ steps.version.outputs.VERSION }}-win-x86.zip
+          files: publish/JiraWatcher-${{ steps.version.outputs.VERSION }}-win-x64.zip
           generate_release_notes: true
