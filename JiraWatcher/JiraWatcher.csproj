@@ -1,6 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>JiraWatcher</AssemblyName>
+    <Title>JiraWatcher</Title>
+    <Product>JiraWatcher</Product>
+    <Company>Kortelainen</Company>
+    <Authors>Kortelainen</Authors>
+    <Description>Desktop Jira dashboard for monitoring issues with JQL-based views and notifications.</Description>
+    <FileVersion>2.1.0.0</FileVersion>
+
+    <RepositoryUrl>https://github.com/Kortelainen/JiraWatcher</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Kortelainen/JiraWatcher</PackageProjectUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+    
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
