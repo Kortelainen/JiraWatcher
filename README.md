@@ -14,7 +14,7 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 
 
 ## Requirements
-- Windows 11 (Other platforms remain untested)
+- Windows 11 64-bit (Other platforms remain untested)
 - Jira installation with Jira API access
 - Jira API version 3 support only
 
@@ -33,11 +33,16 @@ Application will display example tickets on a list until settings are properly c
 
 ## Future Roadmap
 Here are the planned features and fixes, listed in no particular order:
-- ~~Hide error icon when no errors occur; display exception messages for troubleshooting.~~
+- UX/UI Enhancements
 - Implement more robust error handling mechanisms.
-- ~~Allow users to enable/disable notifications and customize notification sounds.~~
 - Integrate with Windows native notifications for a seamless user experience.
 - Provide a visual indicator for an empty Jira item list.
-- Address styling inconsistencies and introduce style sheets such as dark and light mode.
-- ~~Implement multiple tabs, each with its own JQL query and tab-specific settings.~~
 - Enhance configurability of refresh rates while considering Jira API throttling limitations.
+- Sign the exe with https://signpath.org/
+- Main dashboard with graph and visualization tools
+- Mass update gigs trough configured workflows
+- Configure dashboard columns
+- Peek at a gig
+- Modify/update gig.
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.

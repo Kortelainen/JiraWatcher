@@ -24,7 +24,7 @@ That's it. The GitHub Actions workflow triggers automatically.
 ### What happens automatically
 - The workflow builds a self-contained single-file `win-x86` release exe.
 - `FileVersion` in the exe is set to the tag version (e.g. `2.1.0.0`).
-- The exe is zipped as `JiraWatcher-2.1.0-win-x86.zip`.
+- The exe is zipped as `JiraWatcher-2.1.0-win-x64.zip`.
 - A GitHub Release is created with the zip attached and auto-generated release notes.
 
 You can monitor the build at: **GitHub → Actions tab**
