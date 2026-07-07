@@ -15,7 +15,7 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 
 ## Requirements
 - Windows 11 64-bit (Other platforms remain untested)
-- Jira installation with Jira API access
+- Jira installation with Jira API access (For cloud create token [here](https://id.atlassian.com/manage-profile/security/api-tokens))
 - Jira API version 3 support only (Latest jira cloud)
 
 ## Setup
