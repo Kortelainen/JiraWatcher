@@ -10,16 +10,13 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 - Notification alerts and taskbar flashing for newly added items.
 - Local storage of all settings ensures security and convenience.
 
-v1
-<img width="976" height="524" alt="Screenshot 2026-03-23 182438" src="https://github.com/user-attachments/assets/77e2758c-190e-410e-ae2f-3073f4e49232" />
-v2
 <img width="985" height="522" alt="image" src="https://github.com/user-attachments/assets/4c496847-7492-43c3-b3cb-3f21a62137d3" />
 
 
 ## Requirements
 - Windows 11 64-bit (Other platforms remain untested)
 - Jira installation with Jira API access
-- Jira API version 3 support only
+- Jira API version 3 support only (Latest jira cloud)
 
 ## Setup
 Download release zip from git sidebar and extact to preferred location. Create windows shortcuts if preferred.
@@ -30,11 +27,7 @@ Download release zip from git sidebar and extact to preferred location. Create w
 - **Jira API Username / Password:** Mandatory for authentication.
 - **JQL:** Construct your query using the Jira search feature, then copy and paste it here. Basic validation is in place, though further enhancements are planned.
 
-Application will display example tickets on a list until settings are properly configured.
-
-v1
-![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/2e6a298b-4017-4c44-8053-350c41bf09ec)
-v2
+Application will display example tickets on a list until settings are properly configured. Here is what the settings page looks like right now.
 <img width="739" height="610" alt="image" src="https://github.com/user-attachments/assets/06b0b948-8bc4-47f0-a0d8-e58b9908ed6b" />
 
 ## Future Roadmap
