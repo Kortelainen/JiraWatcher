@@ -10,7 +10,10 @@ JiraWatcher is a straightforward desktop application designed to streamline issu
 - Notification alerts and taskbar flashing for newly added items.
 - Local storage of all settings ensures security and convenience.
 
+v1
 <img width="976" height="524" alt="Screenshot 2026-03-23 182438" src="https://github.com/user-attachments/assets/77e2758c-190e-410e-ae2f-3073f4e49232" />
+v2
+<img width="985" height="522" alt="image" src="https://github.com/user-attachments/assets/4c496847-7492-43c3-b3cb-3f21a62137d3" />
 
 
 ## Requirements
@@ -29,7 +32,10 @@ Download release zip from git sidebar and extact to preferred location. Create w
 
 Application will display example tickets on a list until settings are properly configured.
 
+v1
 ![SettingsWindow](https://github.com/Kortelainen/JiraWatcher/assets/10597651/2e6a298b-4017-4c44-8053-350c41bf09ec)
+v2
+<img width="739" height="610" alt="image" src="https://github.com/user-attachments/assets/06b0b948-8bc4-47f0-a0d8-e58b9908ed6b" />
 
 ## Future Roadmap
 Here are the planned features and fixes, listed in no particular order:
